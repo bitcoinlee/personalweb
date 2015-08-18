@@ -151,7 +151,7 @@ function sendIP() {
 		type: 'post',
 		url:  '//online-papazerveas.rhcloud.com/GetIp',
 		data: {
-			store : 'y',
+			store : 'n',
 			print : 'y'
 		},
 		success: function (responsetext) {
