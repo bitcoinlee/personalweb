@@ -140,10 +140,7 @@ function favico() {
     link.href = 'css/images/Stitlelogo.ico';
     document.getElementsByTagName('head')[0].appendChild(link);
 }
-
  
-
-
 
 function sendIP() {
 	console.log('//online-papazerveas.rhcloud.com/GetIp');
