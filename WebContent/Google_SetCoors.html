@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>Sotiris Papazerveas - Google Maps API</title>
+<script type="text/javascript"
+	src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script type="text/javascript"
+	src="http://maps.googleapis.com/maps/api/js?v=3.7&sensor=false&language=en"></script>
+<link rel="stylesheet" type="text/css" href="css/stylesheet.css" />
+<script>
+	(function(i, s, o, g, r, a, m) {
+		i['GoogleAnalyticsObject'] = r;
+		i[r] = i[r] || function() {
+			(i[r].q = i[r].q || []).push(arguments)
+		}, i[r].l = 1 * new Date();
+		a = s.createElement(o), m = s.getElementsByTagName(o)[0];
+		a.async = 1;
+		a.src = g;
+		m.parentNode.insertBefore(a, m)
+	})(window, document, 'script', '//www.google-analytics.com/analytics.js',
+			'ga');
+	var filename = window.location.href.substr(window.location.href
+			.indexOf(".") + 1);
+	filename = filename.substr(0, filename.indexOf("/"));
+
+	ga('create', 'UA-42776397-1', filename);
+	ga('send', 'pageview');
+</script>
+<style>
+body {
+	color: white;
+}
+</style>
+</head>
+<body>
+	<input type='file' accept=".csv" onchange='openFile(event)'>
+	<input type="button" value="Print Button" onclick="gmapPrint();">
+	<script type="text/javascript">
+		function gmapPrint() {
+			var content = window.document.getElementById("map");
+			var newWindow = window.open();
+			newWindow.document.write(content.innerHTML);
+			newWindow.print();
+		}
+		var openFile = function(event) {
+			var myArray = [];
+			var input = event.target;
+			var reader = new FileReader();
+			reader.onload = function(event) {
+				var reader = event.target;
+				var text = reader.result;
+				myArray = text.split("\n");
+				for (var i = 0; i < myArray.length - 1; i++) {
+					myArray[i] = myArray[i].substring(0, myArray[i].length - 1);
+				}
+				;
+				markicons(myArray)
+			};
+			reader.readAsText(input.files[0]);
+		};
+		var map;
+		var infowindow;
+		function InitializeMap() {
+			var latlng = new google.maps.LatLng(30.756, 25.986);
+			var myOptions = {
+				zoom : 3,
+				center : latlng,
+				mapTypeId : google.maps.MapTypeId.ROADMAP
+			};
+			map = new google.maps.Map(document.getElementById("map"), myOptions);
+		}
+		function markicons(myArray) {
+			InitializeMap();
+			var ltlng = [];
+			var Desc = [];
+			for (var i = 1; i < myArray.length - 1; i++) {
+				var temp = myArray[i].split(",");
+				Desc.push('<div style="width: 350px;color:#000000;" >'
+						+ "Description: " + temp[0] + "<br>Lat: " + temp[1]
+						+ "<br>Long: " + temp[2] + '</div>');
+				ltlng.push(new google.maps.LatLng(temp[1], temp[2]));
+			}
+			;
+			var image = {
+				url : 'Files/ShopImg.jpg',
+				size : new google.maps.Size(32, 37),
+				origin : new google.maps.Point(0, 0),
+				anchor : new google.maps.Point(0, 32)
+			};
+			map.setCenter(ltlng[0]);
+			map.setZoom(6);
+			for (var i = 0; i <= ltlng.length; i++) {
+				marker = new google.maps.Marker({
+					map : map,
+					position : ltlng[i],
+					/*
+					icon: image,
+					 */
+					title : Desc[i],
+					zIndex : 10
+				});
+				(function(i, marker) {
+					google.maps.event.addListener(marker, 'click', function() {
+						if (!infowindow) {
+							infowindow = new google.maps.InfoWindow({
+								maxWidth : 320
+							});
+						}
+						//  map.setZoom(8);
+						map.setCenter(marker.getPosition());
+						infowindow.setContent(Desc[i]);
+						infowindow.open(map, marker);
+					});
+
+				})(i, marker);
+			}
+		}
+		window.onload = InitializeMap;
+	</script>
+	<div id="map" style="width: 100%; position: absolute; height: 80%">
+	</div>
+</body>
+</html>
