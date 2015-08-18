@@ -141,7 +141,6 @@ function favico() {
     document.getElementsByTagName('head')[0].appendChild(link);
 }
  
-
 function sendIP() {
 	console.log('//online-papazerveas.rhcloud.com/GetIp');
 	$.ajax({
